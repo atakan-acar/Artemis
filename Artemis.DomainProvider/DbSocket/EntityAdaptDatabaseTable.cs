@@ -24,12 +24,7 @@ namespace Artemis.ConsoleUI.DbSocket
             if (types is null)
                 return result;
 
-            IList<Column> columns = new List<Column>();
-            if (types.Length > 0)
-            {
-                return string.Empty;
-            } 
-
+            IList<Column> columns = new List<Column>();   
 
             for (int i = 0; i < types.Length; i++)
             {
