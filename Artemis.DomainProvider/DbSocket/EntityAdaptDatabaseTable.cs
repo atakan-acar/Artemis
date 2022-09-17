@@ -9,46 +9,49 @@ using System.Threading.Tasks;
 namespace Artemis.ConsoleUI.DbSocket
 {
     public class EntityAdaptDatabaseTable
-    { 
+    {
         /// <summary>
         /// Script set all entities
         /// </summary>
         /// <param name="nameSpace">Folder with assets </param>
         /// <param name="assigned">Do you have BaseEntity</param>
         /// <returns></returns>
-        public static string AdaptAll(string nameSpace, Type startType, Type? assigned =null)
+        public static string AdaptAll(string nameSpace, Type startType, Type? assigned = null)
         {
             string result = "";
-            Type[] types = Types(nameSpace, assigned); 
+            Type[] types = Types(nameSpace, assigned);
 
             if (types is null)
                 return result;
 
-            IList<Column> columns = null;
-            if (types?.Length > 0)
+            IList<Column> columns = new List<Column>();
+            if (types.Length > 0)
             {
-                columns = new List<Column>();
-                for (int i = 0; i < types.Length; i++)
-                {
-                    Table table = new Table();
-                    Type domain = types[i];
-                    table.TableName = domain.Name;
-                    PropertyInfo[] properties = domain.GetProperties();
-                    if (properties.Length > 0)
-                    {
-                        for (int prop = 0; prop < properties.Length; prop++)
-                        {
-                            var property = properties[prop];
+                return string.Empty;
+            } 
 
-                            Column c = new Column(property.Name, property.PropertyType);
-                            columns.Add(c);
-                        }
+
+            for (int i = 0; i < types.Length; i++)
+            {
+                Table table = new Table();
+                Type domain = types[i];
+                table.TableName = domain.Name;
+                PropertyInfo[] properties = domain.GetProperties();
+                if (properties.Length > 0)
+                {
+                    for (int prop = 0; prop < properties.Length; prop++)
+                    {
+                        var property = properties[prop];
+
+                        Column c = new Column(property.Name, property.PropertyType);
+                        columns.Add(c);
                     }
-                    table.Columns = columns;
-                    string script = Script.Init(table);
-                    result += script;
                 }
+                table.Columns = columns;
+                string script = Script.Init(table);
+                result += script;
             }
+
             return result;
         }
 
@@ -76,7 +79,7 @@ namespace Artemis.ConsoleUI.DbSocket
                     .Where(x => x.FullName.Contains(nameSpace) && x.IsClass && assigned.IsAssignableFrom(x))
                     .ToArray();
 
-            } 
+            }
             return typeArr;
         }
 
