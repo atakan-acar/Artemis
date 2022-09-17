@@ -67,9 +67,8 @@ namespace Artemis.DomainProvider.ScriptInitiliaze
             }
             tableScript = string.Format(tableScript, table.TableName, columnScript);
             return tableScript;
-        }
-
-        public static string ConvertToTypeString(Type columnType)
+        } 
+        internal static string ConvertToTypeString(Type columnType)
         { 
             if (columnType == typeof(int)) { return "int"; }
             else if (columnType == typeof(string)) { return "nvarchar(355)"; }
