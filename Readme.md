@@ -4,6 +4,8 @@ The Artemis project allows to create the database object if it does not exist in
 
 You give the specified path and the class to inherit that file finds the objects under it and creates the table views
 
+
+```
 namespace Artemis.Domain.Projects.Product
 {
     public class Product : BaseEntity, IEntity
@@ -12,3 +14,4 @@ namespace Artemis.Domain.Projects.Product
         public DateTime CreatedAt { get; set; } 
     }
 }
+```
