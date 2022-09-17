@@ -2,7 +2,7 @@
 The Artemis project allows to create the database object if it does not exist in the database.
 
 
-<p>
+ 
  
  namespace ProjectName.Entities { 
     class Product : IEntity
@@ -19,4 +19,4 @@ The Artemis project allows to create the database object if it does not exist in
     Title  nvarchar not null
    }
   
- </p>
+ 
