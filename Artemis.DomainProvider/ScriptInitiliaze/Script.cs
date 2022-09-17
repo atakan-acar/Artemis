@@ -14,7 +14,7 @@ namespace Artemis.DomainProvider.ScriptInitiliaze
 
 
 
-        public Type DataType { get; set; }   // int = 1, nvarchar(max)= 2, nvarchar({length}) = 4, datetime2(7) = 8, 
+        public Type DataType { get; set; }   // Type or  --> byte int = 1, nvarchar(max)= 2, nvarchar({length}) = 4, datetime2(7) = 8,
 
         public Column(string name, Type dataType)
         {
@@ -53,7 +53,7 @@ namespace Artemis.DomainProvider.ScriptInitiliaze
                     string type = ConvertToTypeString(column.DataType);
 
                     if (string.IsNullOrEmpty(type))
-                        throw new NotSupportedException("Datatype is not supported");
+                        continue;
 
                     if (column == table.Columns.LastOrDefault())
                     {
