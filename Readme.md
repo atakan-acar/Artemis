@@ -22,6 +22,7 @@ namespace Artemis.Domain.Projects.Product
 
 Output: 🗃️
 ```
+--Will output the following table creation script
 Create Table Product (
     UnitPrice decimal(18,0) not null,
     CreatedAt decimal(18,0) not null,
