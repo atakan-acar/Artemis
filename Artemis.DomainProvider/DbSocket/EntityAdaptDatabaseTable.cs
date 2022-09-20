@@ -24,7 +24,7 @@ namespace Artemis.ConsoleUI.DbSocket
             if (types is null)
                 return result;
 
-            IList<Column> columns = new List<Column>();   
+            
 
             for (int i = 0; i < types.Length; i++)
             {
@@ -34,6 +34,7 @@ namespace Artemis.ConsoleUI.DbSocket
                 PropertyInfo[] properties = domain.GetProperties();
                 if (properties.Length > 0)
                 {
+                    IList<Column> columns = new List<Column>();
                     for (int prop = 0; prop < properties.Length; prop++)
                     {
                         var property = properties[prop];
@@ -41,9 +42,9 @@ namespace Artemis.ConsoleUI.DbSocket
                         Column c = new Column(property.Name, property.PropertyType);
                         columns.Add(c);
                     }
-                }
-                table.Columns = columns;
-                string script = Script.Init(table);
+                    table.Columns = columns;
+                } 
+                string script = Script.Init(table); 
                 result += script;
             }
 
