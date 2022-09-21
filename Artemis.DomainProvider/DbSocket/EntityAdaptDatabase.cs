@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Artemis.ConsoleUI.DbSocket
 {
-    public class EntityAdaptDatabaseTable
+    public class EntityAdaptDatabase
     {
         /// <summary>
         /// Script set all entities
@@ -49,6 +49,81 @@ namespace Artemis.ConsoleUI.DbSocket
             }
 
             return result;
+        }
+
+
+        /// <summary>
+        /// Generates the script of the given object
+        /// </summary>
+        /// <param name="type">Generates the script of the given object</param> 
+        /// <returns></returns>
+        public static string AdaptEntity<T>() where T :  class, new()
+        {
+            string script = String.Empty;
+
+            Type type = typeof(T);
+
+            PropertyInfo[] properties = type.GetProperties();
+
+            if (properties.Any())
+            {
+                
+                int iterations = properties.Length;
+                IList<Column> columns = new List<Column>();
+                for (int i = 0; i < iterations; i++)
+                {
+                    PropertyInfo property = properties[i];
+
+                    Column c = new Column(property.Name, property.PropertyType);
+
+                    columns.Add(c);
+                }
+
+                Table table = new Table
+                {
+                    TableName = type.Name,
+                    Columns = columns
+                }; 
+
+                script = Script.Init(table);
+            } 
+            return script;  
+        }
+
+        /// <summary>
+        /// parametre olarak geçilen tipin scriptini oluşturur
+        /// </summary>
+        /// <param name="type">Generates the script of the given object</param> 
+        /// <returns></returns>
+        public static string AdaptEntity(Type t)
+        {
+            string script = String.Empty; 
+
+            PropertyInfo[] properties = t.GetProperties();
+
+            if (properties.Any())
+            {
+                
+                int iterations = properties.Length;
+                IList<Column> columns = new List<Column>();
+                for (int i = 0; i < iterations; i++)
+                {
+                    PropertyInfo property = properties[i];
+
+                    Column c = new Column(property.Name, property.PropertyType);
+
+                    columns.Add(c);
+                }
+
+                Table table = new Table
+                {
+                    Columns = columns,
+                    TableName = t.Name
+                }; 
+
+                script = Script.Init(table);
+            }
+            return script;
         }
 
 
