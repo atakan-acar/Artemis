@@ -50,6 +50,17 @@ namespace Artemis.ConsoleUI.DbSocket
         {
             return CreateTable(type);
         }
+        /// <summary>
+        ///  Creates the data type of the object passed as a parameter
+        /// </summary>
+        /// <param name="type">Generates the script of the given object</param> 
+        /// <returns></returns>
+        public static string AdaptEntity(object entity)
+        {
+            Type type = entity.GetType();
+            return CreateTable(type);
+        }
+
 
         /// <summary>
         /// Generates the script of the given types

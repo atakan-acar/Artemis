@@ -13,7 +13,10 @@ string categoryScript = EntityAdaptDatabase.AdaptEntity(typeof(Category));
 
 string allScript = EntityAdaptDatabase.AdaptAll("Artemis.Domain.Projects", typeof(Product), typeof(IEntity));
 
+string objectScript = EntityAdaptDatabase.AdaptEntity(new Product());
+
 Type[] types = { typeof(Product), typeof(Category) };
 
 string allTypes = EntityAdaptDatabase.AdaptEntity(types);
-    
+
+Console.WriteLine(objectScript);
