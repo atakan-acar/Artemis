@@ -8,9 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Artemis.ConsoleUI.DbSocket
-{
-    public delegate string ScriptInitiliazeInvoker(Table table, int ret);
-
+{ 
     public class EntityAdaptDatabase
     {
         /// <summary>
