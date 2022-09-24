@@ -25,7 +25,7 @@ Output: 🗃️
 --Will output the following table creation script
 Create Table Product (
     UnitPrice decimal(18,0) not null,
-    CreatedAt decimal(18,0) not null,
+    CreatedAt datetime2(7) not null,
 )
 ```
 
