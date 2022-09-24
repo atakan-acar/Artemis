@@ -3,11 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Artemis.ConsoleUI.DbSocket
 {
+    public delegate string ScriptInitiliazeInvoker(Table table, int ret);
+
     public class EntityAdaptDatabase
     {
         /// <summary>
@@ -18,37 +21,15 @@ namespace Artemis.ConsoleUI.DbSocket
         /// <returns></returns>
         public static string AdaptAll(string nameSpace, Type startType, Type? assigned = null)
         {
-            string result = "";
+            string script = "";
+
             Type[] types = Types(nameSpace, assigned);
 
-            if (types is null)
-                return result;
+            if (types is null) return script;
 
-            
+            script = LoopScript<Type>((t) => CreateTable(t), types, types.Length);
 
-            for (int i = 0; i < types.Length; i++)
-            {
-                Table table = new Table();
-                Type domain = types[i];
-                table.TableName = domain.Name;
-                PropertyInfo[] properties = domain.GetProperties();
-                if (properties.Length > 0)
-                {
-                    IList<Column> columns = new List<Column>();
-                    for (int prop = 0; prop < properties.Length; prop++)
-                    {
-                        var property = properties[prop];
-
-                        Column c = new Column(property.Name, property.PropertyType);
-                        columns.Add(c);
-                    }
-                    table.Columns = columns;
-                } 
-                string script = Script.Init(table); 
-                result += script;
-            }
-
-            return result;
+            return script;
         }
 
 
@@ -57,76 +38,34 @@ namespace Artemis.ConsoleUI.DbSocket
         /// </summary>
         /// <param name="type">Generates the script of the given object</param> 
         /// <returns></returns>
-        public static string AdaptEntity<T>() where T :  class, new()
+        public static string AdaptEntity<T>() where T : class, new()
         {
-            string script = String.Empty;
-
-            Type type = typeof(T);
-
-            PropertyInfo[] properties = type.GetProperties();
-
-            if (properties.Any())
-            {
-                
-                int iterations = properties.Length;
-                IList<Column> columns = new List<Column>();
-                for (int i = 0; i < iterations; i++)
-                {
-                    PropertyInfo property = properties[i];
-
-                    Column c = new Column(property.Name, property.PropertyType);
-
-                    columns.Add(c);
-                }
-
-                Table table = new Table
-                {
-                    TableName = type.Name,
-                    Columns = columns
-                }; 
-
-                script = Script.Init(table);
-            } 
-            return script;  
+            return CreateTable(typeof(T));
         }
 
         /// <summary>
-        /// parametre olarak geçilen tipin scriptini oluşturur
+        ///  Creates the data type of the object passed as a parameter
         /// </summary>
         /// <param name="type">Generates the script of the given object</param> 
         /// <returns></returns>
-        public static string AdaptEntity(Type t)
+        public static string AdaptEntity(Type type)
         {
-            string script = String.Empty; 
+            return CreateTable(type);
+        }
 
-            PropertyInfo[] properties = t.GetProperties();
-
-            if (properties.Any())
-            {
-                
-                int iterations = properties.Length;
-                IList<Column> columns = new List<Column>();
-                for (int i = 0; i < iterations; i++)
-                {
-                    PropertyInfo property = properties[i];
-
-                    Column c = new Column(property.Name, property.PropertyType);
-
-                    columns.Add(c);
-                }
-
-                Table table = new Table
-                {
-                    Columns = columns,
-                    TableName = t.Name
-                }; 
-
-                script = Script.Init(table);
-            }
-            return script;
+        /// <summary>
+        /// Generates the script of the given types
+        /// </summary>
+        /// <param name="types">Types</param> 
+        /// <returns></returns> 
+        public static string AdaptEntity(Type[] types)
+        {
+            return LoopScript<Type>((t) => CreateTable(t), types, types.Length);
         }
 
 
+
+        #region private methods 
         /// <summary>
         /// Gets objects that will exist in the database 
         /// </summary>
@@ -153,6 +92,51 @@ namespace Artemis.ConsoleUI.DbSocket
             }
             return typeArr;
         }
+
+        private static string LoopScript<T>(Func<T, string> action, T[] t, int iterations)
+        {
+            string script = string.Empty;
+            for (int i = 0; i < iterations; i++)
+            {
+                script += action(t[i]);
+            }
+            return script;
+        }
+
+
+        private static string CreateTable(Type type)
+        {
+
+            Func<Table, string> scriptResponse = (x) => Script.Init(x);
+
+            PropertyInfo[] properties = type.GetProperties();
+
+            string script;
+
+            int iterations = properties.Length;
+            IList<Column> columns = new List<Column>();
+            for (int i = 0; i < iterations; i++)
+            {
+                PropertyInfo property = properties[i];
+
+                Column c = new Column(property.Name, property.PropertyType);
+
+                columns.Add(c);
+            }
+
+            Table table = new Table
+            {
+                Columns = columns,
+                TableName = type.Name
+            };
+
+
+            script = scriptResponse(table);
+
+            return script;
+        }
+
+        #endregion
 
     }
 }

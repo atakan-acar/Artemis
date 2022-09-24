@@ -1,5 +1,6 @@
 using Artemis.ConsoleUI.DbSocket;
 using Artemis.Domain.Projects;
+using Artemis.Domain.Projects.Category;
 using Artemis.Domain.Projects.Product;
 
 namespace Artemis.TestScenario
@@ -22,6 +23,18 @@ namespace Artemis.TestScenario
             string productScript = EntityAdaptDatabase.AdaptAll("Artemis.Domain.Projects", typeof(Product),typeof(IEntity));
 
             Assert.NotEmpty(productScript);
+        }
+
+        [Fact]
+        public void GivenTypes()
+        {
+            Type[] types = { typeof(Product), typeof(Category) };
+
+            string typesScript = EntityAdaptDatabase.AdaptEntity(types);
+
+            Assert.NotEmpty(typesScript);
+
+
         }
     }
 }

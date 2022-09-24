@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Artemis.Domain.Projects.h_AppSetings
 {
-    public class h_AppSettings
+    public class h_AppSettings : IEntity
     {
         public Guid Id { get; set; }
 

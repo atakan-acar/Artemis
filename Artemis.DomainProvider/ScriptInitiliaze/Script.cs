@@ -10,10 +10,7 @@ namespace Artemis.DomainProvider.ScriptInitiliaze
 
     public class Column
     {
-        public string Name { get; set; }
-
-
-
+        public string Name { get; set; } 
         public Type DataType { get; set; }   // Type or  --> byte int = 1, nvarchar(max)= 2, nvarchar({length}) = 4, datetime2(7) = 8,
 
         public Column(string name, Type dataType)
