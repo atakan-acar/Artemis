@@ -10,18 +10,23 @@ namespace Artemis.DomainProvider.ScriptInitiliaze
 
     public class Column
     {
-        public string Name { get; set; } 
+        public string Name { get; set; }
+
+        public int Order { get; set; }
+        public bool IsKey { get; set; }
         public Type DataType { get; set; }   // Type or  --> byte int = 1, nvarchar(max)= 2, nvarchar({length}) = 4, datetime2(7) = 8,
 
-        public Column(string name, Type dataType)
+        public Column(string name, Type dataType, bool isKey, int order)
         {
             Name = name;
             DataType = dataType;
+            IsKey = isKey;
+            Order = order;
         }
     }
     public class Table
     {
-        public string TableName { get; set; } 
+        public string TableName { get; set; }
 
         public IList<Column> Columns { get; set; } = new List<Column>();
 
@@ -35,16 +40,39 @@ namespace Artemis.DomainProvider.ScriptInitiliaze
             Columns = columns;
         }
     }
+    
     public static class Script
     {
+        private static string SetColumn(Column column, Column lastColumn, string type, bool isKey)
+        {
+            string columnScript = "";
+            string keyValue = isKey ? "PRIMARY KEY" : "";
+            if (column == lastColumn)
+            {
+                columnScript += $"{column.Name} {type} {keyValue}";
+            }
+            else
+            {
+                columnScript += $"{column.Name} {type} {keyValue}, ";
+            }
+
+            return columnScript;
+        }
         public static string Init(Table table)
         {
             string tableScript = "--{0} Table \nCREATE TABLE {0} ({1})\n";
             string columnScript = string.Empty;
 
-            if (table.Columns.Any())
-            {
+            bool keyCheck = table.Columns.Where(x => x.IsKey).Count() > 1;
 
+            if (keyCheck)
+                throw new Exception("Two keys cannot be used");
+
+
+
+            if (table.Columns.Any())
+            { 
+                
                 foreach (var column in table.Columns)
                 {
                     string type = ConvertToTypeString(column.DataType);
@@ -52,14 +80,8 @@ namespace Artemis.DomainProvider.ScriptInitiliaze
                     if (string.IsNullOrEmpty(type))
                         continue;
 
-                    if (column == table.Columns.LastOrDefault())
-                    {
-                        columnScript += $"{column.Name} {type} ";
-                    }
-                    else
-                    {
-                        columnScript += $"{column.Name} {type}, ";
-                    }
+                    columnScript += SetColumn(column, table.Columns.LastOrDefault(), type, column.IsKey);
+                    
                 }
             }
             tableScript = string.Format(tableScript, table.TableName, columnScript);

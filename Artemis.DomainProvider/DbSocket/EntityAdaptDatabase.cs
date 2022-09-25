@@ -1,4 +1,5 @@
-﻿using Artemis.DomainProvider.ScriptInitiliaze;
+﻿using Artemis.Common.ArtemisAttributes;
+using Artemis.DomainProvider.ScriptInitiliaze;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -128,11 +129,20 @@ namespace Artemis.ConsoleUI.DbSocket
             {
                 PropertyInfo property = properties[i];
 
-                Column c = new Column(property.Name, property.PropertyType);
+                var viewAttribute = 
+                    property.GetCustomAttribute(typeof(DatabaseViewAttribute));
+
+                var databaseView = viewAttribute as DatabaseViewAttribute;
+
+                if (databaseView is null)
+                    continue;
+
+                Column c = new Column(databaseView.ColumnName, property.PropertyType, databaseView.IsKey, databaseView.Order);
 
                 columns.Add(c);
             }
 
+            columns = columns.OrderBy(x => x.Order).ToList();
             Table table = new Table
             {
                 Columns = columns,

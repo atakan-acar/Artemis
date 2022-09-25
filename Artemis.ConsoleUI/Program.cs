@@ -7,16 +7,21 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 
-string productScript = EntityAdaptDatabase.AdaptEntity<Product>();
+//string productScript = EntityAdaptDatabase.AdaptEntity<Product>();
 
-string categoryScript = EntityAdaptDatabase.AdaptEntity(typeof(Category));
+//string categoryScript = EntityAdaptDatabase.AdaptEntity(typeof(Category));
 
-string allScript = EntityAdaptDatabase.AdaptAll("Artemis.Domain.Projects", typeof(Product), typeof(IEntity));
+//string allScript = EntityAdaptDatabase.AdaptAll("Artemis.Domain.Projects", typeof(Product), typeof(IEntity));
 
-string objectScript = EntityAdaptDatabase.AdaptEntity(new Product());
+//string objectScript = EntityAdaptDatabase.AdaptEntity(new Product());
+
+//Type[] types = { typeof(Product), typeof(Category) };
+
+//string allTypes = EntityAdaptDatabase.AdaptEntity(types);
+
+//Console.WriteLine(objectScript);
+
 
 Type[] types = { typeof(Product), typeof(Category) };
-
 string allTypes = EntityAdaptDatabase.AdaptEntity(types);
-
-Console.WriteLine(objectScript);
+Console.WriteLine(allTypes);
