@@ -3,6 +3,7 @@ using Artemis.DomainProvider.ScriptInitiliaze;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
@@ -22,7 +23,7 @@ namespace Artemis.ConsoleUI.DbSocket
         {
             string script = "";
 
-            Type[] types = Types(nameSpace, assigned);
+            Type[] types = Types(x=> x.FullName.Contains(nameSpace));
 
             if (types is null) return script;
 
@@ -82,25 +83,16 @@ namespace Artemis.ConsoleUI.DbSocket
         /// <param name="nameSpace">Retrieves All objects from the specified File</param>
         /// <param name="assigned">Inherited objects of the specified type come</param>
         /// <returns></returns>
-        private static Type[] Types(string nameSpace, Type? assigned = null)
+        private static Type[] Types(Expression<Func<Type, bool>> expression)
         {
-            Type[] typeArr = null;
-            if (assigned is null)
-            {
-                typeArr = AppDomain.CurrentDomain.GetAssemblies()
-                    .SelectMany(t => t.GetTypes())
-                    .Where(x => x.FullName.Contains(nameSpace) && x.IsClass)
-                    .ToArray();
-            }
-            else
-            {
-                typeArr = AppDomain.CurrentDomain.GetAssemblies()
-                    .SelectMany(t => t.GetTypes())
-                    .Where(x => x.FullName.Contains(nameSpace) && x.IsClass && assigned.IsAssignableFrom(x))
+            var typesFolder = AppDomain.CurrentDomain.GetAssemblies()
+                    .SelectMany(t => t.GetTypes()).AsQueryable();
+
+            Type[] types = typesFolder.Where(expression)
                     .ToArray();
 
-            }
-            return typeArr;
+
+            return types;
         }
 
         private static string LoopScript<T>(Func<T, string> action, T[] t, int iterations)

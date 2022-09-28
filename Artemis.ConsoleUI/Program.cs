@@ -1,4 +1,5 @@
 ﻿using Artemis.ConsoleUI.DbSocket;
+using Artemis.Domain.Entities.User;
 using Artemis.Domain.Projects;
 using Artemis.Domain.Projects.Category;
 using Artemis.Domain.Projects.h_AppSetings;
@@ -11,7 +12,7 @@ using Microsoft.Extensions.Logging;
 
 //string categoryScript = EntityAdaptDatabase.AdaptEntity(typeof(Category));
 
-//string allScript = EntityAdaptDatabase.AdaptAll("Artemis.Domain.Projects", typeof(Product), typeof(IEntity));
+string allScript = EntityAdaptDatabase.AdaptAll("Artemis.Domain.Entities", typeof(User), typeof(IEntity));
 
 //string objectScript = EntityAdaptDatabase.AdaptEntity(new Product());
 
@@ -22,6 +23,8 @@ using Microsoft.Extensions.Logging;
 //Console.WriteLine(objectScript);
 
 
-Type[] types = { typeof(Product), typeof(Category) };
-string allTypes = EntityAdaptDatabase.AdaptEntity(types);
-Console.WriteLine(allTypes);
+//Type[] types = { typeof(Product), typeof(Category) };
+//string allTypes = EntityAdaptDatabase.AdaptEntity(types);
+//Console.WriteLine(allTypes);
+
+Console.WriteLine(allScript);
