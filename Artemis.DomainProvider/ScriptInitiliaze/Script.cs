@@ -40,7 +40,7 @@ namespace Artemis.DomainProvider.ScriptInitiliaze
             Columns = columns;
         }
     }
-    
+
     public static class Script
     {
         private static string SetColumn(Column column, Column lastColumn, string type, bool isKey)
@@ -70,25 +70,24 @@ namespace Artemis.DomainProvider.ScriptInitiliaze
 
 
 
-            if (table.Columns.Any())
-            { 
-                
-                foreach (var column in table.Columns)
-                {
-                    string type = ConvertToTypeString(column.DataType);
+            if (!table.Columns.Any()) return columnScript;
 
-                    if (string.IsNullOrEmpty(type))
-                        continue;
+            foreach (var column in table.Columns)
+            {
+                string type = ConvertToTypeString(column.DataType);
 
-                    columnScript += SetColumn(column, table.Columns.LastOrDefault(), type, column.IsKey);
-                    
-                }
+                if (string.IsNullOrEmpty(type))
+                    continue;
+
+                columnScript += SetColumn(column, table.Columns.LastOrDefault(), type, column.IsKey);
+
             }
+
             tableScript = string.Format(tableScript, table.TableName, columnScript);
             return tableScript;
-        } 
+        }
         internal static string ConvertToTypeString(Type columnType)
-        { 
+        {
             if (columnType == typeof(int)) { return "int"; }
             else if (columnType == typeof(string)) { return "nvarchar(355)"; }
             else if (columnType == typeof(decimal)) { return "decimal(18,0)"; }
@@ -100,5 +99,5 @@ namespace Artemis.DomainProvider.ScriptInitiliaze
         }
     }
 
-   
+
 }
